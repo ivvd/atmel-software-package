@@ -8,6 +8,7 @@ TOP := .
 include $(TOP)/scripts/Makefile.vars
 
 BUILDDIR ?= ./build
+LIBPREFIX ?= lib$(TARGET)-
 
 include $(TOP)/utils/Makefile.inc
 include $(TOP)/target/Makefile.inc
@@ -21,7 +22,9 @@ vpath %.S $(TOP)
 
 LIBS := $(addprefix $(BUILDDIR)/,$(lib-y))
 
-.PHONY: libs clean
+LIBSINSTALL := $(addprefix $(LIBPREFIX),$(notdir $(LIBS)))
+
+.PHONY: libs clean install copy_libs
 
 $(BUILDDIR):
 	@mkdir -p $(BUILDDIR)
@@ -48,8 +51,16 @@ $(BUILDDIR)/%.o: %.S
 
 libs: $(LIBS) 
 
+copy_libs:
+	cp -t $(TOP) $(LIBS)
+
+$(TOP)/$(addprefix $(LIBPREFIX),%.a): %.a
+	mv $< $@
+
+install: copy_libs $(LIBSINSTALL)
+
 clean:
-	@rm -rf $(BUILDDIR) settings
+	@rm -rf $(BUILDDIR) $(LIBSINSTALL) settings
 
 print:
-	@echo $(OBJS:.o=.d)
+	$(ECHO) $(LIBSINSTALL)
