@@ -7,6 +7,9 @@ TOP := .
 
 include $(TOP)/scripts/Makefile.vars
 
+# Additional peripheral that not included to Makefile.vars
+CONFIG_HAVE_ISC = y
+
 BUILDDIR ?= ./build
 LIBPREFIX ?= lib$(TARGET)-
 
