@@ -9,16 +9,21 @@ include $(TOP)/scripts/Makefile.vars
 
 # Additional peripheral that not included to Makefile.vars
 CONFIG_HAVE_ISC = y
+CONFIG_IMAGE_SENSOR = y
+CONFIG_ISC = y
+CONFIG_LCDC = y
+CONFIG_LED = y
+CONFIG_SPI = y
 
 BUILDDIR ?= ./build
 LIBPREFIX ?= lib$(TARGET)-
 
+include $(TOP)/samba_applets/common/Makefile.inc
+include $(TOP)/scripts/Makefile.config
 include $(TOP)/utils/Makefile.inc
 include $(TOP)/target/Makefile.inc
 include $(TOP)/drivers/Makefile.inc
 include $(TOP)/lib/Makefile.inc
-include $(TOP)/samba_applets/common/Makefile.inc
-include $(TOP)/scripts/Makefile.config
 
 vpath %.c $(TOP)
 vpath %.S $(TOP)
