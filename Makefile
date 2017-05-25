@@ -16,7 +16,8 @@ CONFIG_LED = y
 CONFIG_SPI = y
 
 BUILDDIR ?= ./build
-LIBPREFIX ?= lib$(TARGET)-
+LIBPREFIX ?= lib$(TARGET)-$(VARIANT)-
+#LIBPREFIX ?= lib$(TARGET)-
 
 include $(TOP)/samba_applets/common/Makefile.inc
 include $(TOP)/scripts/Makefile.config
@@ -29,7 +30,6 @@ vpath %.c $(TOP)
 vpath %.S $(TOP)
 
 LIBS := $(addprefix $(BUILDDIR)/,$(lib-y))
-
 LIBSINSTALL := $(addprefix $(LIBPREFIX),$(notdir $(LIBS)))
 
 .PHONY: libs clean install copy_libs
@@ -59,16 +59,16 @@ $(BUILDDIR)/%.o: %.S
 
 libs: $(LIBS) 
 
-copy_libs:
-	cp -t $(TOP) $(LIBS)
-
-$(TOP)/$(addprefix $(LIBPREFIX),%.a): %.a
-	mv $< $@
-
-install: copy_libs $(LIBSINSTALL)
-
+install: libs
+	@for i in $(LIBS) ; do cp -v $$i $(TOP) ; done ;
+	@for i in $(notdir $(LIBS)) ; do mv -v $$i $(LIBPREFIX)$$i ; done ;
+	
 clean:
-	@rm -rf $(BUILDDIR) $(LIBSINSTALL) settings
+	@rm -rf $(BUILDDIR) settings
 
 print:
-	$(ECHO) $(LIBSINSTALL)
+	$(ECHO) $(LIBS)
+
+test:
+	@for i in $(notdir $(LIBS)) ; do echo $$i ; done ;
+	
